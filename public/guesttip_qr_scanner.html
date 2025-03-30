@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuestTip QR Scanner</title>
+<style>
+body { background:#000; color:gold; text-align:center; font-family:sans-serif; }
+video { width:100%; max-width:400px; margin:2rem auto; display:block; }
+</style></head><body>
+<h1>Scan GuestTip QR Code</h1>
+<video id="preview"></video>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+function onScanSuccess(decodedText) {
+  if (decodedText.includes("guesttip_tip.html?code=")) {
+    window.location.href = decodedText;
+  }
+}
+new Html5Qrcode("preview").start(
+  { facingMode: "environment" },
+  { fps: 10, qrbox: 250 },
+  onScanSuccess
+);
+</script>
+</body></html>

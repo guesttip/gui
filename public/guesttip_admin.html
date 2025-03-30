@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GuestTip Admin Panel</title>
+<style>
+body { background:#000; color:gold; font-family:sans-serif; padding:2rem; text-align:center; }
+table { width:100%; margin-top:1rem; border-collapse:collapse; background:#111; }
+th, td { border:1px solid #444; padding:0.8rem; }
+input { width:100%; padding:0.4rem; border-radius:5px; font-size:0.9rem; }
+button { background:red; color:white; padding:0.5rem 1rem; border:none; border-radius:6px; cursor:pointer; margin:2px; }
+.btn-save { background:gold; color:black; }
+</style></head>
+<body>
+<h1>GuestTip Admin Panel</h1>
+<table>
+<thead><tr><th>Name</th><th>Email</th><th>QR Code Link</th><th>Actions</th></tr></thead>
+<tbody id="userTable"></tbody>
+</table>
+<script>
+async function loadUsers() {
+  const response = await fetch('users.json');
+  const users = await response.json();
+  const table = document.getElementById('userTable');
+  table.innerHTML = '';
+  for (const name in users) {
+    const user = users[name];
+    const row = document.createElement('tr');
+    row.innerHTML = \`
+      <td>\${name}</td>
+      <td>\${user.email}</td>
+      <td><input type='text' id='code_\${name}' value='\${user.qr_link || ""}' /></td>
+      <td>
+        <button onclick="deleteUser('\${name}')">Delete</button>
+        <button class='btn-save' onclick="saveCode('\${name}')">Save</button>
+      </td>
+    \`;
+    table.appendChild(row);
+  }
+}
+function deleteUser(name) {
+  alert('This version only displays users from users.json. Edit directly.');
+}
+function saveCode(name) {
+  alert('This version only displays users from users.json. Edit directly.');
+}
+loadUsers();
+</script>
+</body></html>

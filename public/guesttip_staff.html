@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GuestTip Staff Dashboard</title>
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #000;
+      color: gold;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: #111;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+    }
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      text-align: center;
+      color: gold;
+    }
+    .qr-code {
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+    .qr-code img {
+      width: 160px;
+      height: 160px;
+    }
+    .stats, .tips {
+      margin: 1rem 0;
+    }
+    .stat-box {
+      background: #222;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      display: inline-block;
+      background: gold;
+      color: black;
+      padding: 0.8rem 1.2rem;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: bold;
+      text-decoration: none;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #d4af37;
+    }
+    ul li {
+      margin-bottom: 0.5rem;
+    }
+    .logout {
+      float: right;
+      margin-top: -1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="btn logout" onclick="logout()">Logout</button>
+    <h1 id="staffName">Welcome!</h1>
+
+    <div class="qr-code">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://guesttip.app/pay/maria123&size=160x160" alt="QR Code">
+    </div>
+
+    <div class="stats">
+      <div class="stat-box" id="totalTips">Total Tips This Month: €0.00</div>
+      <div class="stat-box" id="tipCount">Number of Tips: 0</div>
+    </div>
+
+    <div class="tips">
+      <h3>Recent Tips</h3>
+      <ul id="recentTips"></ul>
+    </div>
+
+    <a href="https://dashboard.stripe.com" target="_blank" class="btn">Withdraw via Stripe</a>
+  </div>
+
+  <script>
+    const loggedInUser = sessionStorage.getItem("guesttip_user");
+    if (!loggedInUser) window.location.href = "guesttip_login.html";
+
+    async function loadTips() {
+      try {
+        const response = await fetch('tips.json');
+        const data = await response.json();
+        const tips = data.tips.filter(tip => tip.worker === loggedInUser);
+
+        let total = 0;
+        let recentHTML = '';
+
+        tips.forEach(tip => {
+          total += tip.amount;
+          recentHTML += `<li>€${tip.amount.toFixed(2)} – “${tip.message}”</li>`;
+        });
+
+        document.getElementById('totalTips').innerText = `Total Tips This Month: €${total.toFixed(2)}`;
+        document.getElementById('tipCount').innerText = `Number of Tips: ${tips.length}`;
+        document.getElementById('recentTips').innerHTML = recentHTML;
+        document.getElementById('staffName').innerText = `Welcome, ${loggedInUser}!`;
+      } catch (e) {
+        console.error('Failed to load tips.json', e);
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('guesttip_user');
+      window.location.href = 'guesttip_login.html';
+    }
+
+    loadTips();
+  </script>
+</body>
+</html>

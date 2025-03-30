@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuestTip Login</title>
+<style>
+body { background:#000; color:gold; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; }
+input, button { padding:1rem; margin:0.5rem; border-radius:10px; border:none; font-size:1rem; }
+button { background:gold; color:black; font-weight:bold; cursor:pointer; }
+</style></head>
+<body>
+<h1>GuestTip Login</h1>
+<input type="text" id="workerName" placeholder="Full Name" />
+<input type="password" id="workerPass" placeholder="Password" />
+<button onclick="login()">Login</button>
+<p><a href="guesttip_register.html" style="color: gold;">Don't have an account? Register</a></p>
+<script>
+function login() {
+  const name = document.getElementById('workerName').value;
+  const pass = document.getElementById('workerPass').value;
+  let users = JSON.parse(localStorage.getItem('guesttip_users')) || {};
+  if (!users[name] || users[name].password !== pass) {
+    alert('Invalid name or password!');
+    return;
+  }
+  sessionStorage.setItem('guesttip_user', name);
+  window.location.href = 'guesttip_staff.html';
+}
+</script>
+</body></html>

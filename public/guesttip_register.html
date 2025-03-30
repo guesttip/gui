@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuestTip Register</title>
+<style>
+body { background:#000; color:gold; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; }
+input, select, button { padding:1rem; margin:0.5rem; border-radius:10px; border:none; font-size:1rem; width:300px; }
+button { background:gold; color:black; font-weight:bold; cursor:pointer; }
+</style></head><body>
+<h1>Register New Worker</h1>
+<input type="text" id="regName" placeholder="Full Name" />
+<input type="password" id="regPass" placeholder="Password" />
+<input type="email" id="regEmail" placeholder="Email" />
+<select id="regPayment">
+  <option value="">-- Select Payment Method --</option>
+  <option value="PayPal">PayPal</option>
+  <option value="Revolut">Revolut</option>
+  <option value="Stripe">Stripe</option>
+  <option value="GPay">Google Pay</option>
+  <option value="ApplePay">Apple Pay</option>
+  <option value="Card">Credit/Debit Card</option>
+</select>
+<input type="text" id="paymentLink" placeholder="Payment Link or Info" />
+<button onclick="register()">Register</button>
+<script>
+function generateUniqueCode(name) {
+  return name.replace(/\s+/g, '').toLowerCase() + '_' + Math.floor(Math.random() * 1000000);
+}
+function register() {
+  const name = document.getElementById('regName').value;
+  const pass = document.getElementById('regPass').value;
+  const email = document.getElementById('regEmail').value;
+  const method = document.getElementById('regPayment').value;
+  const link = document.getElementById('paymentLink').value;
+  if (!name || !pass || !email || !method || !link) {
+    alert('Please complete all fields.');
+    return;
+  }
+  let users = JSON.parse(localStorage.getItem('guesttip_users')) || {};
+  if (users[name]) {
+    alert('User already exists!');
+    return;
+  }
+  const code = generateUniqueCode(name);
+  const qrLink = `guesttip_tip.html?code=${code}`;
+  users[name] = { password: pass, email, payment_method: method, payment_info: link, code, qr_link: qrLink };
+  localStorage.setItem('guesttip_users', JSON.stringify(users));
+  alert('Registered successfully! QR code generated.');
+  window.location.href = 'guesttip_login.html';
+}
+</script></body></html>
